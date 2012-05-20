@@ -9,6 +9,8 @@ setTimeout(function() {
         framesPerSecond = 100,
         millisecondsPerFrame = 1000 / framesPerSecond,
         speed = 5,
+        jumpSpeed = 10,
+        gravity = 2,
 
         groundPosition = height - (blockHeight + blockDepth * 2),
 
@@ -84,7 +86,7 @@ setTimeout(function() {
             return;
         }
 
-        player.yv = (ticker.currentTick - jumpStart) / (millisecondsPerFrame / 2) - 10;
+        player.yv = (ticker.currentTick - jumpStart) / (millisecondsPerFrame / gravity) - jumpSpeed;
         player.applyVelocity();
     }
 
