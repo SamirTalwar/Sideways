@@ -6,7 +6,10 @@ setTimeout(function() {
         blockHeight = 171,
         blockDepth = 42,
 
-        scene, ticker, input, foreground, background, player;
+        groundPosition = height - (blockHeight + blockDepth * 2),
+
+        scene, ticker, input, foreground, background,
+        player, jumping, jumpStart;
 
     function setup() {
         backdrop('skyblue');
@@ -21,6 +24,7 @@ setTimeout(function() {
         if (input.keyboard.left) {
             player.move(-5, 0);
         }
+        jump();
         player.update();
     }
 
@@ -52,11 +56,32 @@ setTimeout(function() {
     function newPlayer(filename) {
         player = foreground.Sprite("PlanetCute/" + filename, {
             x: 0,
-            y: height - (blockHeight + blockDepth * 2),
+            y: groundPosition,
             w: blockWidth,
             h: blockHeight
         });
         player.update();
+    }
+
+    function jump() {
+        if (!jumping && input.keyboard.space) {
+            jumping = true;
+            jumpStart = ticker.currentTick;
+            return;
+        }
+
+        if (!jumping) {
+            return;
+        }
+
+        if (player.y > groundPosition) {
+            player.setY(groundPosition);
+            jumping = false;
+            return;
+        }
+
+        player.yv = (ticker.currentTick - jumpStart) / 5 - 8;
+        player.applyVelocity();
     }
 
     function run() {
