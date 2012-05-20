@@ -6,6 +6,8 @@ setTimeout(function() {
         blockHeight = 171,
         blockDepth = 42,
 
+        framesPerSecond = 100,
+        millisecondsPerFrame = 1000 / framesPerSecond,
         speed = 5,
 
         groundPosition = height - (blockHeight + blockDepth * 2),
@@ -31,7 +33,7 @@ setTimeout(function() {
     }
 
     scene = sjs.Scene({w: width, h: height});
-    ticker = scene.Ticker(step);
+    ticker = scene.Ticker(step, {tickDuration: millisecondsPerFrame});
     input = scene.Input();
     background = scene.Layer('background', {color: 'white'});
     foreground = scene.Layer('foreground');
@@ -82,7 +84,7 @@ setTimeout(function() {
             return;
         }
 
-        player.yv = (ticker.currentTick - jumpStart) / 5 - 8;
+        player.yv = (ticker.currentTick - jumpStart) / (millisecondsPerFrame / 2) - 10;
         player.applyVelocity();
     }
 
