@@ -6,6 +6,20 @@ setTimeout(function() {
         blockHeight = 171,
         blockDepth = 42,
 
+        playerBounds = {
+            top: 64,
+            bottom: blockHeight,
+            left: 17,
+            right: blockWidth - 17
+        },
+
+        blockBounds = {
+            top: blockHeight - blockDepth,
+            bottom: blockHeight,
+            left: 0,
+            right: blockWidth
+        },
+
         framesPerSecond = 100,
         millisecondsPerFrame = 1000 / framesPerSecond,
         speed = 5,
@@ -15,11 +29,14 @@ setTimeout(function() {
         groundPosition = height - (blockHeight + blockDepth * 2),
 
         scene, ticker, input, foreground, background,
-        player, jumping, jumpStart;
+        player, obstacles = [], jumping, jumpStart;
 
     function setup() {
         backdrop('skyblue');
         ground();
+        wall({x: 5, h: 1});
+        wall({x: 7, h: 2});
+        wall({x: 10, h: 1});
         newPlayer('CharacterBoy.png');
     }
 
@@ -31,6 +48,7 @@ setTimeout(function() {
             player.move(-speed, 0);
         }
         jump();
+        checkCollisions();
         player.update();
     }
 
@@ -59,6 +77,22 @@ setTimeout(function() {
         }).update();
     }
 
+    function wall(options) {
+        var x = options.x,
+            height = options.h;
+
+        _(_.range(0, height)).each(function(y) {
+            obstacles.push({x: x, y: y});
+
+            foreground.Sprite("PlanetCute/WallBlock.png", {
+                x: blockWidth * x,
+                y: groundPosition - blockDepth * y,
+                w: blockWidth,
+                h: blockHeight
+            }).update();
+        });
+    }
+
     function newPlayer(filename) {
         player = foreground.Sprite("PlanetCute/" + filename, {
             x: 0,
@@ -80,14 +114,55 @@ setTimeout(function() {
             return;
         }
 
+        player.move(0, (ticker.currentTick - jumpStart) / (millisecondsPerFrame / gravity) - jumpSpeed);
+
         if (player.y > groundPosition) {
             player.setY(groundPosition);
             jumping = false;
             return;
         }
+    }
 
-        player.yv = (ticker.currentTick - jumpStart) / (millisecondsPerFrame / gravity) - jumpSpeed;
-        player.applyVelocity();
+    function checkCollisions() {
+        _(obstacles).each(function(obstacle) {
+            var x = obstacle.x * blockWidth,
+                y = groundPosition - obstacle.y * blockDepth,
+
+                obstacleLeft = x + blockBounds.left,
+                obstacleRight = x + blockBounds.right,
+                obstacleTop = y + blockBounds.top,
+                obstacleBottom = y + blockBounds.bottom,
+
+                playerLeft = player.x + playerBounds.left,
+                playerRight = player.x + playerBounds.right,
+                playerTop = player.y + playerBounds.top,
+                playerBottom = player.y + playerBounds.bottom,
+
+                insideLeft = obstacleLeft < playerRight,
+                insideRight = obstacleRight > playerLeft,
+                insideTop = obstacleTop < playerBottom,
+                insideBottom = obstacleBottom > playerTop,
+
+                differenceLeft, differenceRight, differenceTop, differenceBottom, minimum;
+
+            if (insideLeft && insideRight && insideTop && insideBottom) {
+                differenceLeft = playerRight - obstacleLeft;
+                differenceRight = obstacleRight - playerLeft;
+                differenceTop = playerBottom - obstacleTop;
+                differenceBottom = obstacleBottom - playerTop;
+                minimum = Math.min(differenceLeft, differenceRight, differenceTop, differenceBottom);
+
+                if (differenceLeft == minimum) {
+                    player.setX(obstacleLeft - playerBounds.right);
+                } else if (differenceRight == minimum) {
+                    player.setX(obstacleRight - playerBounds.left);
+                } else if (differenceTop == minimum) {
+                    player.setY(obstacleTop - playerBounds.bottom);
+                } else if (differenceBottom == minimum) {
+                    player.setY(obstacleBottom - playerBounds.top);
+                }
+            }
+        });
     }
 
     function run() {
