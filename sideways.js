@@ -6,6 +6,8 @@ setTimeout(function() {
         blockHeight = 171,
         blockDepth = 42,
 
+        speed = 5,
+
         groundPosition = height - (blockHeight + blockDepth * 2),
 
         scene, ticker, input, foreground, background,
@@ -19,10 +21,10 @@ setTimeout(function() {
 
     function step() {
         if (input.keyboard.right) {
-            player.move(5, 0);
+            player.move(speed, 0);
         }
         if (input.keyboard.left) {
-            player.move(-5, 0);
+            player.move(-speed, 0);
         }
         jump();
         player.update();
