@@ -4,20 +4,31 @@ setTimeout(function() {
 
         blockWidth = 101,
         blockHeight = 171,
-        blockDepth = 42;
+        blockDepth = 42,
 
-    function setup(callback) {
-        setTimeout(callback, 0);
-    }
+        scene, ticker, input, foreground, background, player;
 
-    setup(function() {
+    function setup() {
         backdrop('skyblue');
         ground();
-    });
+        newPlayer('CharacterBoy.png');
+    }
 
-    var scene = sjs.Scene({w: width, h: height}),
-        background = scene.Layer('background', {color: 'white'});
-        foreground = scene.Layer('foreground');
+    function step() {
+        if (input.keyboard.right) {
+            player.move(5, 0);
+        }
+        if (input.keyboard.left) {
+            player.move(-5, 0);
+        }
+        player.update();
+    }
+
+    scene = sjs.Scene({w: width, h: height});
+    ticker = scene.Ticker(step);
+    input = scene.Input();
+    background = scene.Layer('background', {color: 'white'});
+    foreground = scene.Layer('foreground');
 
     function backdrop(color) {
         background.setColor(color);
@@ -37,4 +48,21 @@ setTimeout(function() {
             h: blockHeight
         }).update();
     }
+
+    function newPlayer(filename) {
+        player = foreground.Sprite("PlanetCute/" + filename, {
+            x: 0,
+            y: height - (blockHeight + blockDepth * 2),
+            w: blockWidth,
+            h: blockHeight
+        });
+        player.update();
+    }
+
+    function run() {
+        ticker.run();
+    }
+
+    setup();
+    run();
 }, 0);
