@@ -23,8 +23,8 @@ setTimeout(function() {
         framesPerSecond = 100,
         millisecondsPerFrame = 1000 / framesPerSecond,
         speed = 5,
-        jumpSpeed = 10,
-        gravity = 2,
+        jumpSpeed = 15,
+        gravity = 5,
 
         groundPosition = height - (blockHeight + blockDepth * 2),
 
@@ -47,7 +47,10 @@ setTimeout(function() {
         if (input.keyboard.left) {
             player.move(-speed, 0);
         }
-        jump();
+        if (input.keyboard.space) {
+            jump();
+        }
+        exertGravity();
         checkCollisions();
         player.update();
     }
@@ -104,22 +107,26 @@ setTimeout(function() {
     }
 
     function jump() {
-        if (!jumping && input.keyboard.space) {
+        if (!jumping) {
             jumping = true;
+            player.yv = -jumpSpeed;
             jumpStart = ticker.currentTick;
             return;
         }
+    }
 
-        if (!jumping) {
-            return;
-        }
+    function land() {
+        player.yv = 0;
+        jumping = false;
+    }
 
-        player.move(0, (ticker.currentTick - jumpStart) / (millisecondsPerFrame / gravity) - jumpSpeed);
+    function exertGravity() {
+        player.yv += gravity / millisecondsPerFrame;
+        player.applyVelocity();
 
         if (player.y > groundPosition) {
             player.setY(groundPosition);
-            jumping = false;
-            return;
+            land();
         }
     }
 
@@ -158,6 +165,7 @@ setTimeout(function() {
                     player.setX(obstacleRight - playerBounds.left);
                 } else if (differenceTop == minimum) {
                     player.setY(obstacleTop - playerBounds.bottom);
+                    land();
                 } else if (differenceBottom == minimum) {
                     player.setY(obstacleBottom - playerBounds.top);
                 }
