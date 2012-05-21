@@ -34,9 +34,10 @@ setTimeout(function() {
     function setup() {
         backdrop('skyblue');
         ground();
-        wall({x: 5, h: 1});
-        wall({x: 7, h: 2});
-        wall({x: 10, h: 1});
+        obstacle({image: 'WallBlock.png', x: 5, h: 1});
+        obstacle({image: 'WallBlock.png', x: 7, h: 2});
+        obstacle({image: 'WallBlock.png', x: 10, h: 1});
+        obstacle({image: 'TreeShort.png', x: 3, h: 1});
         newPlayer('CharacterBoy.png');
     }
 
@@ -80,14 +81,15 @@ setTimeout(function() {
         }).update();
     }
 
-    function wall(options) {
-        var x = options.x,
+    function obstacle(options) {
+        var image = 'PlanetCute/' + options.image,
+            x = options.x,
             height = options.h;
 
         _(_.range(0, height)).each(function(y) {
             obstacles.push({x: x, y: y});
 
-            foreground.Sprite("PlanetCute/WallBlock.png", {
+            foreground.Sprite(image, {
                 x: blockWidth * x,
                 y: groundPosition - blockDepth * y,
                 w: blockWidth,
