@@ -30,7 +30,7 @@ setTimeout(function() {
         jumpSpeed = 15,
         gravity = 5,
 
-        groundPosition = height - (blockHeight + blockDepth * 2),
+        groundPosition = height - (blockHeight + blockDepth * 3),
 
         scene, ticker, input, foreground, background,
         player, obstacles = [], jumping, jumpStart;
@@ -71,15 +71,21 @@ setTimeout(function() {
     }
 
     function ground() {
-        foreground.Sprite(sprite('DirtBlock.png'), {
+        foreground.Sprite(sprite('StoneBlock.png'), {
             x: 0,
             y: height - blockHeight,
             w: width,
             h: blockHeight
         }).update();
-        foreground.Sprite(sprite('GrassBlock.png'), {
+        foreground.Sprite(sprite('DirtBlock.png'), {
             x: 0,
             y: height - (blockHeight + blockDepth),
+            w: width,
+            h: blockHeight
+        }).update();
+        foreground.Sprite(sprite('GrassBlock.png'), {
+            x: 0,
+            y: height - (blockHeight + blockDepth * 2),
             w: width,
             h: blockHeight
         }).update();
