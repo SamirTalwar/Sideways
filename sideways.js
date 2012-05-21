@@ -1,4 +1,6 @@
 setTimeout(function() {
+    "use strict";
+
     var width = document.body.offsetWidth,
         height = document.body.offsetHeight,
 
