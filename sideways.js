@@ -1,7 +1,9 @@
 setTimeout(function() {
     "use strict";
 
-    var width = document.body.offsetWidth,
+    var spritePath = 'PlanetCute/',
+
+        width = document.body.offsetWidth,
         height = document.body.offsetHeight,
 
         blockWidth = 101,
@@ -69,13 +71,13 @@ setTimeout(function() {
     }
 
     function ground() {
-        foreground.Sprite("PlanetCute/DirtBlock.png", {
+        foreground.Sprite(sprite('DirtBlock.png'), {
             x: 0,
             y: height - blockHeight,
             w: width,
             h: blockHeight
         }).update();
-        foreground.Sprite("PlanetCute/GrassBlock.png", {
+        foreground.Sprite(sprite('GrassBlock.png'), {
             x: 0,
             y: height - (blockHeight + blockDepth),
             w: width,
@@ -84,7 +86,7 @@ setTimeout(function() {
     }
 
     function obstacle(options) {
-        var image = 'PlanetCute/' + options.image,
+        var image = sprite(options.image),
             x = options.x,
             height = options.h;
 
@@ -101,7 +103,7 @@ setTimeout(function() {
     }
 
     function newPlayer(filename) {
-        player = foreground.Sprite("PlanetCute/" + filename, {
+        player = foreground.Sprite(sprite(filename), {
             x: 0,
             y: groundPosition,
             w: blockWidth,
@@ -177,6 +179,10 @@ setTimeout(function() {
                 }
             }
         });
+    }
+
+    function sprite(name) {
+        return spritePath + name;
     }
 
     function run() {
