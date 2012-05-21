@@ -120,8 +120,10 @@ setTimeout(function() {
     }
 
     function land() {
-        player.yv = 0;
-        jumping = false;
+        if (player.yv >= 0) {
+            player.yv = 0;
+            jumping = false;
+        }
     }
 
     function exertGravity() {
