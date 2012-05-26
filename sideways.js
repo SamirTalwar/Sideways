@@ -38,10 +38,12 @@ setTimeout(function() {
     function setup() {
         backdrop('skyblue');
         ground();
-        obstacle({image: 'WallBlock.png', x: 5, h: 1});
-        obstacle({image: 'WallBlock.png', x: 7, h: 2});
-        obstacle({image: 'WallBlock.png', x: 10, h: 1});
-        obstacle({image: 'TreeShort.png', x: 3, h: 1});
+        obstacle({image: 'WallBlock.png', x: 5});
+        obstacle({image: 'WallBlock.png', x: 7});
+        obstacle({image: 'WallBlock.png', x: 7, y: 1});
+        obstacle({image: 'WallBlock.png', x: 10});
+        obstacle({image: 'TreeShort.png', x: 3});
+        decoration({image: 'Star.png', x: 8, y: 10})
         newPlayer('CharacterBoy.png');
     }
 
@@ -91,21 +93,25 @@ setTimeout(function() {
         }).update();
     }
 
-    function obstacle(options) {
+    function decoration(options) {
         var image = sprite(options.image),
             x = options.x,
-            height = options.h;
+            y = options.y || 0;
 
-        _(_.range(0, height)).each(function(y) {
-            obstacles.push({x: x, y: y});
+        foreground.Sprite(image, {
+            x: blockWidth * x,
+            y: groundPosition - blockDepth * y,
+            w: blockWidth,
+            h: blockHeight
+        }).update();
+    }
 
-            foreground.Sprite(image, {
-                x: blockWidth * x,
-                y: groundPosition - blockDepth * y,
-                w: blockWidth,
-                h: blockHeight
-            }).update();
-        });
+    function obstacle(options) {
+        var x = options.x,
+            y = options.y || 0;
+
+        decoration(options);
+        obstacles.push({x: x, y: y});
     }
 
     function newPlayer(filename) {
